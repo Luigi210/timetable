@@ -1,0 +1,37 @@
+.hour {
+  display: flex;
+  align-items: center;
+}
+
+.hour button {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(27, 139, 238);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+}
+
+.value {
+  border: 1px solid gray;
+  width: 100px;
+  height: 48px;
+}
+
+.type {
+  width: 60px;
+  height: 48px;
+  border: 1px solid gray;
+  border-left: none;
+  background-color: rgb(231, 227, 227);
+}
+
+.minus {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.plus {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}

@@ -1,0 +1,35 @@
+.range {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  height: 55px;
+}
+
+.value {
+  min-width: 115px;
+  height: 90%;
+  border: 1px solid gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.until {
+  width: 34px;
+  height: 95%;
+  color: #fff;
+  background-color: rgb(206, 206, 206);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.right {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
