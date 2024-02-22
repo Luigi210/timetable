@@ -41,9 +41,8 @@ const days = [
 ];
 
 export const Days: React.FC<{
-  data: TimeTable;
-  setData: React.Dispatch<React.SetStateAction<TimeTable>>;
-}> = ({ data, setData }) => {
+  setData: (days: string) => void;
+}> = ({ setData }) => {
   const [dayType, setDayType] = useState<"Mon/Wed/Fri" | "Tue/Thu" | string>(
     "Mon/Wed/Fri"
   );
@@ -55,9 +54,7 @@ export const Days: React.FC<{
   };
 
   useEffect(() => {
-    if (dayType) {
-      setData({ ...data, days: dayType.split("/") });
-    }
+    setData(dayType);
   }, [dayType]);
 
   return (

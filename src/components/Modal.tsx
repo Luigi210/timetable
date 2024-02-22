@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Days } from "./Days";
 import { Hour } from "./Hour";
 import styles from "./Modal.module.css";
@@ -12,7 +12,7 @@ type ModalProps = {
 export type TimeTable = {
   color: string;
   type: string;
-  break?: string;
+  break: number;
   teacher?: string;
   days: string[];
   dayHours: number;
@@ -35,6 +35,7 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
     color: "",
     dayHours: 1,
     allHours: 3,
+    break: 0,
     timeRange: {
       from: "07:00",
       to: "",
@@ -47,16 +48,9 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
 
   const handleSelectUndefinedValues = (
     value: string,
-    type: "break" | "teacher" | "room"
+    type: "teacher" | "room"
   ) => {
-    if (type === "break") {
-      if (value === "novalue") {
-        const { break: br, ...rest } = data;
-        setData(rest);
-      } else {
-        setData({ ...data, break: value });
-      }
-    } else if (type === "teacher") {
+    if (type === "teacher") {
       if (value === "novalue") {
         const { teacher: teacher, ...rest } = data;
         setData(rest);
@@ -73,6 +67,12 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
     }
   };
 
+  const dayChange = (days: string) => {
+    if (!days) return;
+    console.log(days);
+    setData({ ...data, days: days.split("/") });
+  };
+
   useEffect(() => {
     let breakCounts = 0;
 
@@ -80,7 +80,6 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
       .split(".")
       .map((value) => parseInt(value));
     const date = new Date(year, month - 1, day);
-    const dayOfTheWeek = date.getDay();
     const minutes =
       60 * parseInt(data.timeRange.from.split(":")[0]) +
       parseInt(data.timeRange.from.split(":")[1]);
@@ -90,7 +89,11 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
         ...data.timeRange,
         to:
           data.type === "academic"
-            ? convertMinutesToHours(minutes + 45 * data.dayHours)
+            ? convertMinutesToHours(
+                minutes +
+                  45 * data.dayHours +
+                  (Math.trunc(data.dayHours) - 1) * data.break
+              )
             : convertMinutesToHours(minutes + 60 * data.dayHours),
       },
       dateRange: {
@@ -112,9 +115,7 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
       //   date.getDate() +
       //     data.days.length * Math.floor(data.allHours / data.dayHours)
       // )
-      data.days.length,
-      Math.floor(data.allHours / data.dayHours),
-      data.days.length * Math.floor(data.allHours / data.dayHours)
+      data.days
     );
   }, [data.type, data.dayHours, data.break, data.allHours, data.days]);
 
@@ -153,15 +154,14 @@ export const Modal: React.FC<ModalProps> = ({ setIsOpen }) => {
 
               <Hour type="allHours" setData={setData} data={data} />
               <Range from={data.dateRange.from} to={data.dateRange.to} />
-              <Days data={data} setData={setData} />
+              <Days setData={dayChange} />
 
               <select
                 className={styles.select}
                 onChange={(e) =>
-                  handleSelectUndefinedValues(e.target.value, "break")
+                  setData({ ...data, break: parseInt(e.target.value) })
                 }
               >
-                <option value={"novalue"}>Без перерыва</option>
                 <option value={0}>0 мин</option>
                 <option value={5}>5 мин</option>
                 <option value={10}>10 мин</option>
